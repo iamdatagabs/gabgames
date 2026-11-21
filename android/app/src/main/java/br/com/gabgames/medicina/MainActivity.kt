@@ -116,6 +116,7 @@ private fun MedicineApp(){
     val stateKey= remember { stringPreferencesKey("classification") }
     val assignments= remember { mutableStateMapOf<String,String>() }
     var loaded by remember { mutableStateOf(false) }
+    var subjectOrder by remember { mutableStateOf(subjects) }
     var dragging by remember { mutableStateOf<String?>(null) }
     var dragDelta by remember { mutableStateOf(Offset.Zero) }
     var dragOrigin by remember { mutableStateOf(Offset.Zero) }
@@ -132,7 +133,7 @@ private fun MedicineApp(){
         if(target!=null){if(target=="POOL")assignments.remove(name) else assignments[name]=target;persist();message="Disciplina classificada em $target"}
         dragging=null;dragDelta=Offset.Zero
     }
-    val remaining=subjects.filter{it !in assignments}
+    val remaining=subjectOrder.filter{it !in assignments}
     Scaffold(containerColor=bg, snackbarHost={}) { padding->
         Column(Modifier.fillMaxSize().padding(padding).padding(horizontal=16.dp)) {
             Row(Modifier.fillMaxWidth().padding(top=18.dp,bottom=8.dp),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){
@@ -143,7 +144,7 @@ private fun MedicineApp(){
             Text("Tier List.",style=MaterialTheme.typography.headlineLarge,fontWeight=FontWeight.Black,color=accent)
             Text(message,color=Color.LightGray,style=MaterialTheme.typography.bodySmall,modifier=Modifier.padding(top=5.dp,bottom=12.dp))
             Row(horizontalArrangement=Arrangement.spacedBy(8.dp),modifier=Modifier.fillMaxWidth()){
-                OutlinedButton(onClick={val shuffled=remaining.shuffled();message="Disciplinas disponíveis: ${shuffled.size}"} ,modifier=Modifier.weight(1f)){Text("Embaralhar")}
+                OutlinedButton(onClick={subjectOrder=subjectOrder.shuffled();message="Disciplinas embaralhadas!"} ,modifier=Modifier.weight(1f)){Text("Embaralhar")}
                 OutlinedButton(onClick={assignments.clear();persist();message="Tier list reiniciada"},modifier=Modifier.weight(1f)){Text("Reiniciar")}
             }
             Text("${assignments.size} de ${subjects.size} classificadas",color=accent,fontWeight=FontWeight.Bold,modifier=Modifier.padding(vertical=9.dp))
@@ -155,7 +156,7 @@ private fun MedicineApp(){
                             Spacer(Modifier.width(12.dp));Text(tier.title,color=Color(0xFF17131A),fontWeight=FontWeight.Bold,style=MaterialTheme.typography.titleSmall)
                             Spacer(Modifier.weight(1f));Text(assignments.count{it.value==tier.key}.toString(),color=Color(0xFF17131A),fontWeight=FontWeight.Bold)
                         }
-                        FlowRowCompat(items=subjects.filter{assignments[it]==tier.key},dragging=dragging,dragDelta=dragDelta,onStart={name,origin,size->dragging=name;dragOrigin=origin;dragSize=size;dragDelta=Offset.Zero},onMove={dragDelta=it},onEnd={drop()})
+                        FlowRowCompat(items=subjectOrder.filter{assignments[it]==tier.key},dragging=dragging,dragDelta=dragDelta,onStart={name,origin,size->dragging=name;dragOrigin=origin;dragSize=size;dragDelta=Offset.Zero},onMove={dragDelta=it},onEnd={drop()})
                     }
                 }
                 item{
@@ -171,6 +172,7 @@ private fun MedicineApp(){
     if(!loaded)Box(Modifier.fillMaxSize().background(bg),contentAlignment=Alignment.Center){CircularProgressIndicator(color=accent)}
 }
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 private fun FlowRowCompat(items:List<String>,dragging:String?,dragDelta:Offset,onStart:(String,Offset,IntSize)->Unit,onMove:(Offset)->Unit,onEnd:()->Unit){
     androidx.compose.foundation.layout.FlowRow(horizontalArrangement=Arrangement.spacedBy(7.dp),verticalArrangement=Arrangement.spacedBy(7.dp),modifier=Modifier.fillMaxWidth().padding(9.dp)){
