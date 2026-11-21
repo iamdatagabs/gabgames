@@ -13,7 +13,7 @@ h1{font-size:clamp(32px,6vw,58px);line-height:1.02;letter-spacing:-.055em;margin
 .toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0 18px}button{font:inherit;font-weight:700;border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--panel2);color:var(--text);cursor:pointer;transition:.15s}button:hover{border-color:var(--accent);transform:translateY(-1px)}button.primary{background:var(--accent);border-color:var(--accent);color:#171326}
 .board{display:grid;gap:9px}.tier{display:grid;grid-template-columns:190px 1fr;min-height:90px;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#171925}.rank{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:29px;font-weight:950;color:#17131a;text-align:center;padding:8px}.rank small{font-size:10px;line-height:1.15;font-weight:850;max-width:160px;letter-spacing:0}.items{display:flex;flex-wrap:wrap;align-content:flex-start;align-items:flex-start;gap:8px;padding:10px;min-height:90px;transition:background .15s}.tier.over .items,.pool.over{background:#a99cff18;outline:2px dashed var(--accent);outline-offset:-4px}
 .s .rank{background:#ff777e}.a .rank{background:#ffb66d}.b .rank{background:#f1d36b}.c .rank{background:#a6d78a}.d .rank{background:#82c4dc}.e .rank{background:#b5a0e8}
-.tile{touch-action:none;background:#282c40;border:1px solid #414761;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:650;cursor:grab;user-select:none;box-shadow:0 3px 12px #0002}.tile:hover{border-color:#aaa0ff}.tile:active{cursor:grabbing}.tile.dragging{opacity:.3}
+.tile{touch-action:none;background:#282c40;border:1px solid #414761;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:650;cursor:grab;user-select:none;-webkit-user-select:none;box-shadow:0 3px 12px #0002;will-change:transform}.tile:hover{border-color:#aaa0ff}.tile:active{cursor:grabbing}.tile.dragging{opacity:.18}.tile-touch-ghost{position:fixed;z-index:9999;pointer-events:none;margin:0;opacity:1!important;transform:translate3d(0,0,0) scale(1.04);box-shadow:0 14px 36px #0009;border-color:var(--accent);will-change:transform}
 .poolbox{margin-top:22px;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.poolhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}h2{font-size:15px;margin:0}.muted{color:var(--muted);font-size:12px}#pool{min-height:104px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:10px;border:1px dashed #444a66;border-radius:10px}
 .bottom{display:flex;justify-content:space-between;gap:12px;margin-top:14px;color:var(--muted);font-size:12px}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#f4f5fb;color:#171925;padding:10px 16px;border-radius:10px;font-weight:750;box-shadow:0 8px 30px #0008;opacity:0;pointer-events:none;transition:opacity .2s}.toast.show{opacity:1}
 @media(max-width:600px){.wrap{padding-top:22px}.top{margin-bottom:26px}.tier{grid-template-columns:116px 1fr;min-height:82px}.rank{font-size:23px}.rank small{font-size:9px;max-width:105px}.items{min-height:82px;padding:8px;gap:6px}.tile{font-size:12px;padding:8px 9px}.poolhead{align-items:flex-start;flex-direction:column}.bottom{flex-direction:column}}
@@ -39,7 +39,50 @@ h1{font-size:clamp(32px,6vw,58px);line-height:1.02;letter-spacing:-.055em;margin
 <script>
 const subjects=["Anatomia Humana","Histologia","Embriologia","Biologia Celular e Molecular","Bioquímica","Genética Médica","Fisiologia Humana","Imunologia","Microbiologia","Parasitologia","Patologia Geral","Farmacologia","Semiologia Médica","Semiotécnica","Ética Médica e Bioética","Saúde Coletiva","Epidemiologia","Medicina de Família e Comunidade","Medicina Preventiva","Medicina Baseada em Evidências","Habilidades Médicas","Comunicação e Relação Médico-Paciente","Biossegurança","Diagnóstico por Imagem","Medicina Laboratorial","Clínica Médica","Cardiologia","Pneumologia","Gastroenterologia","Nefrologia","Endocrinologia","Hematologia","Reumatologia","Neurologia","Dermatologia","Infectologia","Oncologia","Psiquiatria","Pediatria","Neonatologia","Ginecologia","Obstetrícia","Cirurgia Geral","Anestesiologia","Ortopedia e Traumatologia","Oftalmologia","Otorrinolaringologia","Urologia","Medicina de Urgência e Emergência","Terapia Intensiva","Medicina Legal e Perícia Médica","Internato"];
 const zones=[...document.querySelectorAll("[data-zone]")],pool=document.getElementById("pool");let dragged=null;
-function tile(name){const el=document.createElement("div");el.className="tile";el.textContent=name;el.draggable=true;el.addEventListener("dragstart",()=>{dragged=el;el.classList.add("dragging")});el.addEventListener("dragend",()=>{el.classList.remove("dragging");dragged=null;save();progress()});el.addEventListener("pointerdown",e=>{if(e.pointerType!=="touch")return;dragged=el;el.classList.add("dragging");el.setPointerCapture(e.pointerId)});el.addEventListener("pointerup",e=>{if(e.pointerType!=="touch"||dragged!==el)return;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest("[data-zone]");if(target){(target.querySelector(".items")||target).append(el);save();progress()}el.classList.remove("dragging");dragged=null});el.addEventListener("pointercancel",()=>{el.classList.remove("dragging");dragged=null});return el}
+let touchDrag=null,touchFrame=0;
+function clearTouchDrag(commit){
+ if(!touchDrag)return;
+ const d=touchDrag;touchDrag=null;
+ if(touchFrame)cancelAnimationFrame(touchFrame);
+ d.source.classList.remove("dragging");
+ d.ghost.remove();
+ if(d.over)d.over.classList.remove("over");
+ if(commit&&d.target){(d.target.querySelector(".items")||d.target).append(d.source);save();progress()}
+}
+function tile(name){
+ const el=document.createElement("div");el.className="tile";el.textContent=name;el.draggable=true;
+ el.addEventListener("dragstart",()=>{dragged=el;el.classList.add("dragging")});
+ el.addEventListener("dragend",()=>{el.classList.remove("dragging");dragged=null;save();progress()});
+ el.addEventListener("pointerdown",e=>{
+  if(e.pointerType!=="touch"&&e.pointerType!=="pen")return;
+  if(touchDrag)return;
+  e.preventDefault();
+  const r=el.getBoundingClientRect(),ghost=el.cloneNode(true);
+  ghost.classList.add("tile-touch-ghost");ghost.style.width=r.width+"px";ghost.style.left=r.left+"px";ghost.style.top=r.top+"px";
+  document.body.append(ghost);
+  touchDrag={source:el,ghost,pointerId:e.pointerId,offsetX:e.clientX-r.left,offsetY:e.clientY-r.top,x:e.clientX,y:e.clientY,target:null,over:null};
+  el.classList.add("dragging");
+  try{el.setPointerCapture(e.pointerId)}catch(_){}
+ });
+ el.addEventListener("pointermove",e=>{
+  if(!touchDrag||touchDrag.source!==el||touchDrag.pointerId!==e.pointerId)return;
+  e.preventDefault();touchDrag.x=e.clientX;touchDrag.y=e.clientY;
+  if(!touchFrame)touchFrame=requestAnimationFrame(()=>{
+   touchFrame=0;if(!touchDrag)return;
+   const d=touchDrag;
+   d.ghost.style.transform="translate3d("+(d.x-d.offsetX)+"px,"+(d.y-d.offsetY)+"px,0) scale(1.04)";
+   const hit=document.elementFromPoint(d.x,d.y);
+   const zone=hit?.closest("[data-zone]");
+   const target=zone&&(zone.dataset.zone==="pool"?pool:zone);
+   if(d.over!==target){if(d.over)d.over.classList.remove("over");d.over=target;if(target)target.classList.add("over")}
+   d.target=target;
+  });
+ });
+ el.addEventListener("pointerup",e=>{if(touchDrag?.source===el&&touchDrag.pointerId===e.pointerId){e.preventDefault();clearTouchDrag(true)}});
+ el.addEventListener("pointercancel",()=>{if(touchDrag?.source===el)clearTouchDrag(false)});
+ el.addEventListener("lostpointercapture",()=>{if(touchDrag?.source===el)clearTouchDrag(false)});
+ return el
+}
 function progress(){const n=document.querySelectorAll(".tier .tile").length;document.getElementById("progress").textContent=n+" de "+subjects.length+" matérias classificadas"}
 function save(){const state={};zones.forEach(z=>state[z.dataset.zone]=[...z.querySelector(".items")?.children||z.children].map(x=>x.textContent));state.pool=[...pool.children].map(x=>x.textContent);try{localStorage.setItem("gabgames-tier-medicina",JSON.stringify(state))}catch(e){}}
 function restore(){let state;try{state=JSON.parse(localStorage.getItem("gabgames-tier-medicina"))}catch(e){}if(state){zones.filter(z=>z.dataset.zone!=="pool").forEach(z=>{const dest=z.querySelector(".items")||z;(state[z.dataset.zone]|| (z.dataset.zone==="E"?state.F:[] )||[]).forEach(n=>dest.append(tile(n)))});(state.pool||[]).forEach(n=>pool.append(tile(n)))}else subjects.forEach(n=>pool.append(tile(n)));progress()}
