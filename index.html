@@ -2,51 +2,24 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#10111a"><meta name="description" content="Monte sua tier list das disciplinas de Engenharia da Computação.">
-<title>GabGames — Tier List de Engenharia da Computação</title>
+<meta name="theme-color" content="#10111a"><meta name="description" content="Escolha um curso e monte sua tier list de disciplinas no GabGames.">
+<title>GabGames — Escolha seu curso</title>
 <style>
-:root{color-scheme:dark;--bg:#10111a;--panel:#191b28;--panel2:#202337;--line:#30344a;--text:#f4f5fb;--muted:#a4a8bc;--accent:#a99cff}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#34305b 0,transparent 50%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
-.wrap{width:min(1120px,calc(100% - 32px));margin:auto;padding:34px 0 64px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:36px}.brand{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:800}.pill{border:1px solid var(--line);border-radius:99px;padding:6px 11px;color:var(--muted);font-size:12px}
-h1{font-size:clamp(32px,6vw,58px);line-height:1.02;letter-spacing:-.055em;margin:12px 0}.intro{max-width:680px;color:var(--muted);font-size:16px;margin:0 0 25px}
-.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0 18px}button{font:inherit;font-weight:700;border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--panel2);color:var(--text);cursor:pointer;transition:.15s}button:hover{border-color:var(--accent);transform:translateY(-1px)}button.primary{background:var(--accent);border-color:var(--accent);color:#171326}
-.board{display:grid;gap:9px}.tier{display:grid;grid-template-columns:190px 1fr;min-height:90px;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#171925}.rank{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:29px;font-weight:950;color:#17131a;text-align:center;padding:8px}.rank small{font-size:10px;line-height:1.15;font-weight:850;max-width:160px;letter-spacing:0}.items{display:flex;flex-wrap:wrap;align-content:flex-start;align-items:flex-start;gap:8px;padding:10px;min-height:90px;transition:background .15s}.tier.over .items,.pool.over{background:#a99cff18;outline:2px dashed var(--accent);outline-offset:-4px}
-.s .rank{background:#ff777e}.a .rank{background:#ffb66d}.b .rank{background:#f1d36b}.c .rank{background:#a6d78a}.d .rank{background:#82c4dc}.e .rank{background:#b5a0e8}
-.tile{background:#282c40;border:1px solid #414761;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:650;cursor:grab;user-select:none;box-shadow:0 3px 12px #0002}.tile:hover{border-color:#aaa0ff}.tile:active{cursor:grabbing}.tile.dragging{opacity:.3}
-.poolbox{margin-top:22px;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.poolhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}h2{font-size:15px;margin:0}.muted{color:var(--muted);font-size:12px}#pool{min-height:104px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:10px;border:1px dashed #444a66;border-radius:10px}
-.bottom{display:flex;justify-content:space-between;gap:12px;margin-top:14px;color:var(--muted);font-size:12px}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#f4f5fb;color:#171925;padding:10px 16px;border-radius:10px;font-weight:750;box-shadow:0 8px 30px #0008;opacity:0;pointer-events:none;transition:opacity .2s}.toast.show{opacity:1}
-@media(max-width:600px){.wrap{padding-top:22px}.top{margin-bottom:26px}.tier{grid-template-columns:116px 1fr;min-height:82px}.rank{font-size:23px}.rank small{font-size:9px;max-width:105px}.items{min-height:82px;padding:8px;gap:6px}.tile{font-size:12px;padding:8px 9px}.poolhead{align-items:flex-start;flex-direction:column}.bottom{flex-direction:column}}
-</style>
-</head>
-<body><main class="wrap">
-<div class="top"><div class="brand">GABGAMES <span style="color:#777b91">/ MINI GAMES</span></div><div class="pill"><a href="./medicina/" style="color:var(--accent);text-decoration:none">🩺 Medicina</a><span style="color:#777b91;padding:0 7px">·</span><a href="./direito/" style="color:var(--accent);text-decoration:none">⚖️ Direito</a></div></div>
-<h1>Engenharia da<br><span style="color:var(--accent)">Computação.</span></h1>
-<p class="intro">Toda graduação tem aquelas matérias que a gente ama, as que dão trabalho e as que parecem ter sido feitas para testar a nossa sanidade. Chegou a hora de rankear todas elas.</p>
-<div class="toolbar"><button class="primary" id="copy">Copiar minha tier list ↗</button><button id="shuffle">Embaralhar disciplinas</button><button id="reset">Reiniciar jogo</button></div>
-<section class="board" aria-label="Categorias da tier list">
-<div class="tier s" data-zone="S"><div class="rank">S<small>Melhor de todas</small></div><div class="items"></div></div>
-<div class="tier a" data-zone="A"><div class="rank">A<small>Muito boa</small></div><div class="items"></div></div>
-<div class="tier b" data-zone="B"><div class="rank">B<small>Boa</small></div><div class="items"></div></div>
-<div class="tier c" data-zone="C"><div class="rank">C<small>Tem que fazer, né?</small></div><div class="items"></div></div>
-<div class="tier d" data-zone="D"><div class="rank">D<small>Pago pra alguém fazer</small></div><div class="items"></div></div>
-<div class="tier e" data-zone="E"><div class="rank">E<small>Gostei tanto que fiz 2x</small></div><div class="items"></div></div>
-</section>
-<section class="poolbox"><div class="poolhead"><h2>📚 Disciplinas para classificar</h2><span class="muted">Arraste os cards para as categorias</span></div><div id="pool" data-zone="pool"></div></section>
-<div class="bottom"><span id="progress">0 disciplinas classificadas</span><span>Seu progresso fica salvo neste navegador.</span></div>
-</main><div class="toast" id="toast" role="status"></div>
-<script>
-const subjects=["Algoritmos e Programação","Estruturas de Dados","Programação Orientada a Objetos","Engenharia de Software","Análise de Algoritmos","Matemática Discreta","Lógica para Computação","Cálculo I","Cálculo II","Cálculo Numérico","Álgebra Linear","Probabilidade e Estatística","Geometria Analítica","Física I","Física II","Eletricidade e Magnetismo","Química Geral","Circuitos Elétricos","Eletrônica Analógica","Eletrônica Digital","Arquitetura e Organização de Computadores","Sistemas Operacionais","Redes de Computadores","Banco de Dados","Teoria da Computação","Linguagens Formais e Autômatos","Compiladores","Microprocessadores e Microcontroladores","Sistemas Embarcados","Sinais e Sistemas","Processamento Digital de Sinais","Controle e Automação","Instrumentação Eletrônica","Inteligência Artificial","Aprendizado de Máquina","Computação Gráfica","Segurança da Informação","Computação em Nuvem","Internet das Coisas (IoT)","Projeto de Sistemas Digitais","Metodologia Científica","Ética e Legislação","Empreendedorismo","Projeto Final / TCC"];
-const zones=[...document.querySelectorAll("[data-zone]")],pool=document.getElementById("pool");let dragged=null;
-function tile(name){const el=document.createElement("div");el.className="tile";el.textContent=name;el.draggable=true;el.addEventListener("dragstart",()=>{dragged=el;el.classList.add("dragging")});el.addEventListener("dragend",()=>{el.classList.remove("dragging");dragged=null;save();progress()});return el}
-function progress(){const n=document.querySelectorAll(".tier .tile").length;document.getElementById("progress").textContent=n+" de "+subjects.length+" disciplinas classificadas"}
-function save(){const state={};zones.forEach(z=>state[z.dataset.zone]=[...z.querySelector(".items")?.children||z.children].map(x=>x.textContent));state.pool=[...pool.children].map(x=>x.textContent);try{localStorage.setItem("gabgames-tier-engenharia",JSON.stringify(state))}catch(e){}}
-function restore(){let state;try{state=JSON.parse(localStorage.getItem("gabgames-tier-engenharia"))}catch(e){}if(state){zones.filter(z=>z.dataset.zone!=="pool").forEach(z=>{const dest=z.querySelector(".items")||z;(state[z.dataset.zone]|| (z.dataset.zone==="E"?state.F:[] )||[]).forEach(n=>dest.append(tile(n)))});(state.pool||[]).forEach(n=>pool.append(tile(n)))}else subjects.forEach(n=>pool.append(tile(n)));progress()}
-zones.forEach(z=>{z.addEventListener("dragover",e=>{e.preventDefault();z.classList.add("over")});z.addEventListener("dragleave",()=>z.classList.remove("over"));z.addEventListener("drop",e=>{e.preventDefault();z.classList.remove("over");if(dragged){(z.querySelector(".items")||z).append(dragged);save();progress()}})});
-pool.addEventListener("dragover",e=>{e.preventDefault();pool.classList.add("over")});pool.addEventListener("dragleave",()=>pool.classList.remove("over"));pool.addEventListener("drop",e=>{e.preventDefault();pool.classList.remove("over");if(dragged){pool.append(dragged);save();progress()}});
-function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2100)}
-document.getElementById("reset").onclick=()=>{if(confirm("Tem certeza que deseja reiniciar sua tier list?")){localStorage.removeItem("gabgames-tier-engenharia");zones.forEach(z=>(z.querySelector(".items")||z).replaceChildren());pool.replaceChildren();subjects.forEach(n=>pool.append(tile(n)));progress();toast("Jogo reiniciado!")}};
-document.getElementById("shuffle").onclick=()=>{const all=[...document.querySelectorAll(".tile")].sort(()=>Math.random()-.5);all.forEach(x=>pool.append(x));save();progress();toast("Disciplinas embaralhadas!")};
-document.getElementById("copy").onclick=async()=>{const labels=["S","A","B","C","D","E"];const out=["MINHA TIER LIST — ENGENHARIA DA COMPUTAÇÃO","",...labels.map(k=>k+": "+[...document.querySelector('[data-zone="'+k+'"] .items').children].map(x=>x.textContent).join(", ")),"", "Não classificadas: "+[...pool.children].map(x=>x.textContent).join(", ")].join("\n");try{await navigator.clipboard.writeText(out);toast("Tier list copiada para a área de transferência!")}catch(e){window.prompt("Copie seu resultado:",out)}};
-restore();
-</script></body></html>
+:root{color-scheme:dark;--bg:#10111a;--panel:#191b28;--line:#30344a;--text:#f4f5fb;--muted:#a4a8bc;--accent:#a99cff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -20%,#34305b 0,transparent 52%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{width:min(1040px,calc(100% - 32px));margin:auto;padding:48px 0 64px}.brand{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:800}
+h1{font-size:clamp(42px,8vw,76px);line-height:.98;letter-spacing:-.06em;margin:24px 0 16px}.intro{max-width:640px;color:var(--muted);font-size:17px;margin:0 0 34px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.course{display:block;text-decoration:none;color:inherit;padding:24px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#202337,#171925);transition:.18s;min-height:176px}.course:hover{transform:translateY(-3px);border-color:var(--course-accent);background:#24283b}.emoji{font-size:27px}.course h2{font-size:22px;margin:12px 0 5px;letter-spacing:-.025em}.course p{margin:0;color:var(--muted);font-size:13px}.go{display:inline-block;margin-top:17px;color:var(--course-accent);font-weight:800;font-size:13px}
+footer{margin-top:28px;color:#777b91;font-size:12px}
+@media(max-width:620px){.wrap{padding-top:30px}.grid{grid-template-columns:1fr}.course{min-height:0;padding:20px}}
+</style></head><body><main class="wrap">
+<div class="brand">GABGAMES <span style="color:#777b91">/ MINI GAMES</span></div>
+<h1>Qual é o seu<br><span style="color:var(--accent)">curso?</span></h1>
+<p class="intro">Escolha uma graduação, organize as disciplinas nas suas categorias e monte sua tier list. A classificação é sua — e o debate está liberado.</p>
+<section class="grid" aria-label="Cursos disponíveis">
+<a class="course" href="./engenharia/" style="--course-accent:#a99cff"><span class="emoji">💻</span><h2>Engenharia da Computação</h2><p>Algoritmos, circuitos, sistemas, redes e muito mais.</p><span class="go">Montar tier list →</span></a>
+<a class="course" href="./medicina/" style="--course-accent:#83d8c6"><span class="emoji">🩺</span><h2>Medicina</h2><p>Do ciclo básico às especialidades e ao internato.</p><span class="go">Montar tier list →</span></a>
+<a class="course" href="./direito/" style="--course-accent:#e7a6c8"><span class="emoji">⚖️</span><h2>Direito</h2><p>Da teoria geral à prática jurídica.</p><span class="go">Montar tier list →</span></a>
+<a class="course" href="./geografia/" style="--course-accent:#a8d68a"><span class="emoji">🌎</span><h2>Geografia</h2><p>Bacharelado e Licenciatura em uma única tier list.</p><span class="go">Montar tier list →</span></a>
+</section><footer>GabGames · Escolha seu curso e divirta-se.</footer>
+</main></body></html>
