@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "GabGames Medicina",
+  "short_name": "Medicina",
+  "description": "Tier List interativa das disciplinas de Medicina.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#10111a",
+  "theme_color": "#10111a",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
