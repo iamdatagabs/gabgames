@@ -1,4 +1,4 @@
-# GabGames — Tier List de Engenharia da Computação
+# GabGames — Tier List de Engenharia da Computação\n\n**Portfólio:** https://iamdatagabs.github.io/iamdatagabs/portfolio/
 
 Um mini game estático para montar sua tier list das disciplinas de Engenharia da Computação.
 
